@@ -1,5 +1,6 @@
 import pandas as pd
-from sqlalchemy import create_engineimport sys
+from sqlalchemy import create_engine
+import sys
 
 
 def load_data(messages_filepath: str, categories_filepath: str) -> pd.DataFrame:
