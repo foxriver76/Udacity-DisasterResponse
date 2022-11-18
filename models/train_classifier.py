@@ -80,7 +80,7 @@ def evaluate_model(model: Pipeline, X_test: pd.DataFrame, Y_test: pd.DataFrame) 
     :param Y_test: Test labels
     :return: None
     """
-    Y_pred = pipeline.predict(X_test)
+    Y_pred = model.predict(X_test)
     
     for i in range(Y_test.shape[1]):
         print(f'Metrics for {Y_test.iloc[:, i].name}:')
