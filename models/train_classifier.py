@@ -19,7 +19,7 @@ import numpy as np
 import sys
 
 
-def load_data(database_filepath: str) -> pd.DataFrame, pd.DataFrame:
+def load_data(database_filepath: str) -> [pd.DataFrame, pd.DataFrame]:
     """
     Loads data from the database and return train and test data
     
