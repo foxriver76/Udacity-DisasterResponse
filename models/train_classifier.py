@@ -26,7 +26,7 @@ def load_data(database_filepath: str) -> [pd.DataFrame, pd.DataFrame]:
     :param database_filepath: path to the sqlite database
     """
     
-    engine = create_engine(f'sqlite:///{database_filepath}.db')
+    engine = create_engine(f'sqlite:///{database_filepath}')
     df = pd.read_sql_table(
         'disaster_response',
         con=engine
