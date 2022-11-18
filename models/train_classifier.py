@@ -15,7 +15,8 @@ from sklearn.model_selection import GridSearchCV
 import pickle
 import pandas as pd
 from sqlalchemy import create_engine
-import numpy as npimport sys
+import numpy as np
+import sys
 
 
 def load_data(database_filepath: str) -> pd.DataFrame, pd.DataFrame:
