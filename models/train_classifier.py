@@ -1,5 +1,5 @@
 import nltk
-nltk.download(['punkt', 'wordnet'])
+nltk.download(['punkt', 'wordnet', 'omw-1.4'])
 
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
@@ -60,7 +60,7 @@ def build_model() -> GridSearchCV:
     """
     This method builds the model pipeline
     
-    :return: GridSearchCV 
+    :return: GridSearchCV
     """
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -72,11 +72,11 @@ def build_model() -> GridSearchCV:
     parameters = {
         #'vect__ngram_range': ((1, 1), (1, 2)),
         #'clf__estimator__n_estimators': [50, 100, 200],
-        'clf__estimator__n_estimators': [50]
         #'clf__estimator__min_samples_split': [2, 3, 4]
+        'clf__estimator__n_estimators': [50, 100]
     }
 
-    cv = GridSearchCV(pipeline, param_grid=parameters, cv=5, n_jobs=-1)
+    cv = GridSearchCV(pipeline, param_grid=parameters, cv=5, n_jobs=-1, error_score='raise')
     
     return cv
 
@@ -112,6 +112,8 @@ def main():
         database_filepath, model_filepath = sys.argv[1:]
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
         X, Y = load_data(database_filepath)
+
+        # For showcase may switch to a higher test_size to further speed up the training process
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
         print('Building model...')
@@ -121,6 +123,7 @@ def main():
         cv.fit(X_train, Y_train)
         
         # only save the best estimator found via gridsearch
+        print(f'Best parameters: {cv.best_params_} with score {cv.best_score_}')
         model = cv.best_estimator_
         
         print('Evaluating model...')
