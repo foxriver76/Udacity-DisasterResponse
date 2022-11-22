@@ -56,11 +56,11 @@ def tokenize(text: str) -> np.array:
     return clean_tokens
 
 
-def build_model() -> Pipeline:
+def build_model() -> GridSearchCV:
     """
     This method builds the model pipeline
     
-    :return: Pipeline 
+    :return: GridSearchCV 
     """
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
@@ -68,8 +68,17 @@ def build_model() -> Pipeline:
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
     
-    return pipeline
+    # just some params, else it gets too slow for a showcase
+    parameters = {
+        #'vect__ngram_range': ((1, 1), (1, 2)),
+        #'clf__estimator__n_estimators': [50, 100, 200],
+        'clf__estimator__n_estimators': [50]
+        #'clf__estimator__min_samples_split': [2, 3, 4]
+    }
 
+    cv = GridSearchCV(pipeline, param_grid=parameters, cv=5, n_jobs=-1)
+    
+    return cv
 
 def evaluate_model(model: Pipeline, X_test: pd.DataFrame, Y_test: pd.DataFrame) -> None:
     """
@@ -106,10 +115,13 @@ def main():
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
         print('Building model...')
-        model = build_model()
+        cv = build_model()
         
         print('Training model...')
-        model.fit(X_train, Y_train)
+        cv.fit(X_train, Y_train)
+        
+        # only save the best estimator found via gridsearch
+        model = cv.best_estimator_
         
         print('Evaluating model...')
         evaluate_model(model, X_test, Y_test)
