@@ -32,20 +32,39 @@ df = pd.read_sql_table('disaster_response', engine)
 # load model
 model = joblib.load("../models/classifier.pkl")
 
-
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
     
+    df_disaster_types = df.iloc[:, 5:]
+    
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
+        {
+            'data': [
+                Bar(
+                    x=df_disaster_types.columns,
+                    y=df_disaster_types.sum(axis=0)
+                )
+            ],
+
+            'layout': {
+                'title': 'Number of disaster category occurence',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Disaster category",
+                    'ticklen': 10,
+                    'tickangle': 25
+                }
+            }
+        },
         {
             'data': [
                 Bar(
