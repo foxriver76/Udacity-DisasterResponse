@@ -42,14 +42,17 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     
     # rename the columns of `categories`
     categories.columns = category_colnames
+    
+    # the related column has values of 2 in it, we assume it should be True (1)
+    categories['related'] = categories['related'].str.replace('2', '1')
 
     for column in categories:
         # set each value to be the last character of the string
         categories[column] = categories[column].str.split('-').str[1]
-
+        
         # convert column from string to numeric
         categories[column] = pd.to_numeric(categories[column])
-        
+    
     # drop the original categories column from `df`
     df.drop(columns=['categories'], inplace=True)
     
@@ -70,7 +73,7 @@ def save_data(df: pd.DataFrame, database_filename: str) -> None:
     """
     
     engine = create_engine(f'sqlite:///{database_filename}')
-    df.to_sql('disaster_response', engine, index=False)
+    df.to_sql('disaster_response', engine, index=False, if_exists='replace')
 
 def main():
     if len(sys.argv) == 4:
